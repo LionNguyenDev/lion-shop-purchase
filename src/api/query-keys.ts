@@ -1,0 +1,22 @@
+export const queryKeys = {
+  me: ['me'] as const,
+  categories: ['categories'] as const,
+  products: (params: object) => ['products', params] as const,
+  product: (id: string) => ['product', id] as const,
+  cart: ['cart'] as const,
+  orders: (page: number) => ['orders', page] as const,
+  order: (id: string) => ['order', id] as const,
+  provinces: ['provinces'] as const,
+  wards: (provinceCode: number) => ['wards', provinceCode] as const,
+  admin: {
+    all: ['admin'] as const,
+    stats: ['admin', 'stats'] as const,
+    users: (params: object) => ['admin', 'users', params] as const,
+    categories: ['admin', 'categories'] as const,
+    products: (params: object) => ['admin', 'products', params] as const,
+    orders: (params: object) => ['admin', 'orders', params] as const,
+    order: (id: string) => ['admin', 'order', id] as const,
+    settings: ['admin', 'settings'] as const,
+    shopPassword: ['admin', 'settings', 'shop-password'] as const,
+  },
+};

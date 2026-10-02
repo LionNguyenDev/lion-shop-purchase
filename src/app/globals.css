@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens (RGB channels so Tailwind can apply opacity) */
+:root {
+  --color-background: 240 253 247;
+  --color-foreground: 6 46 36;
+  --color-card: 255 255 255;
+  --color-primary: 4 120 87; /* emerald-700, 5.5:1 with white */
+  --color-primary-hover: 6 95 70;
+  --color-primary-soft: 209 250 229;
+  --color-on-primary: 255 255 255;
+  --color-accent: 234 88 12; /* orange-600 */
+  --color-accent-hover: 194 65 12;
+  --color-accent-soft: 255 237 213;
+  --color-on-accent: 255 255 255;
+  --color-muted: 236 245 241;
+  --color-muted-foreground: 71 85 105;
+  --color-border: 200 236 220;
+  --color-ring: 5 150 105;
+  --color-destructive: 220 38 38;
+  --color-destructive-soft: 254 226 226;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  select,
+  label[for] {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-50% + 8px)) scale(0.98);
+  }
+}
+
+/* Dual-thumb range slider: two native range inputs stacked; only the thumbs take pointer events */
+@layer components {
+  .range-thumb {
+    @apply pointer-events-none absolute inset-0 h-full w-full cursor-pointer appearance-none bg-transparent;
+  }
+  .range-thumb:focus-visible {
+    box-shadow: none !important;
+  }
+  .range-thumb::-webkit-slider-thumb {
+    pointer-events: auto;
+    appearance: none;
+    height: 24px;
+    width: 24px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid rgb(var(--color-primary));
+    box-shadow: 0 2px 6px rgb(6 78 59 / 0.25);
+    cursor: grab;
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  .range-thumb::-moz-range-thumb {
+    pointer-events: auto;
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid rgb(var(--color-primary));
+    box-shadow: 0 2px 6px rgb(6 78 59 / 0.25);
+    cursor: grab;
+  }
+  .range-thumb:active::-webkit-slider-thumb {
+    cursor: grabbing;
+    transform: scale(1.15);
+  }
+  .range-thumb:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 5px rgb(var(--color-ring) / 0.3);
+  }
+  .range-thumb:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 5px rgb(var(--color-ring) / 0.3);
+  }
+}
