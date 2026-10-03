@@ -5,6 +5,11 @@ export const serverEnv = {
   mongoDbName: process.env.MONGODB_DB || undefined,
   /** Per client per instance. Two clients (Better Auth + Mongoose) run in each serverless instance. */
   mongoPoolSize: Number(process.env.MONGODB_POOL_SIZE || 5),
+  /**
+   * How long a query waits to reach the cluster before failing. The driver default (30s) can outlast a
+   * serverless function, so an unreachable database would show up as a timeout instead of a clear error.
+   */
+  mongoServerSelectionTimeoutMs: Number(process.env.MONGODB_SERVER_SELECTION_TIMEOUT_MS || 5000),
   authSecret: process.env.BETTER_AUTH_SECRET,
   authUrl: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   smtp: {

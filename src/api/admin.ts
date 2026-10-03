@@ -6,6 +6,7 @@ import type {
   AdminCategory,
   AdminStats,
   AdminUser,
+  CategoryOption,
   Order,
   Paginated,
   Product,
@@ -45,10 +46,19 @@ export function useAdminUsers(params: ListParams) {
 export const useRevokeShopAccess = () =>
   useAdminMutation(async (id: string) => (await client.patch(`/admin/users/${id}`, { shopAccess: false })).data);
 
-export function useAdminCategories() {
+export function useAdminCategories(params: ListParams) {
   return useQuery({
-    queryKey: queryKeys.admin.categories,
-    queryFn: async () => (await client.get<AdminCategory[]>('/admin/categories')).data,
+    queryKey: queryKeys.admin.categories(params),
+    queryFn: async () => (await client.get<Paginated<AdminCategory>>('/admin/categories', { params })).data,
+    placeholderData: keepPreviousData,
+  });
+}
+
+/** Every category, for filters and the product form */
+export function useCategoryOptions() {
+  return useQuery({
+    queryKey: queryKeys.admin.categoryOptions,
+    queryFn: async () => (await client.get<CategoryOption[]>('/admin/categories/options')).data,
   });
 }
 

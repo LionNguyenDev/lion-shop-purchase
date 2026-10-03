@@ -23,6 +23,7 @@ export function RegisterForm() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -33,7 +34,16 @@ export function RegisterForm() {
   const onSubmit = handleSubmit(async ({ confirmPassword: _, ...values }) => {
     setFormError('');
     const { error } = await authClient.signUp.email(values);
-    if (error) return setFormError(authErrorMessage(error));
+    if (error) {
+      // Point duplicate email / phone errors at their own field
+      const field = error.code?.startsWith('USER_ALREADY_EXISTS')
+        ? 'email'
+        : error.code === 'PHONE_ALREADY_EXISTS'
+          ? 'phone'
+          : null;
+      if (field) return setError(field, { message: authErrorMessage(error) }, { shouldFocus: true });
+      return setFormError(authErrorMessage(error));
+    }
     await queryClient.invalidateQueries();
     toast.success('Tạo tài khoản thành công! Hãy nhập mật khẩu cửa hàng để bắt đầu mua sắm.');
     router.replace(ROUTES.HOME);

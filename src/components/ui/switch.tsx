@@ -22,7 +22,7 @@ export function Switch({ checked, onCheckedChange, label, disabled }: SwitchProp
       <span
         className={cn(
           'relative h-6 w-11 rounded-full transition-colors duration-200',
-          checked ? 'bg-primary' : 'bg-slate-300'
+          checked ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-600'
         )}
       >
         <span

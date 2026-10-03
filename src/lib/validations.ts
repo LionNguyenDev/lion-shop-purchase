@@ -16,10 +16,18 @@ export const emailSchema = z.email('Email không hợp lệ').trim().toLowerCase
 
 export const passwordSchema = z.string().min(8, 'Mật khẩu tối thiểu 8 ký tự').max(128, 'Mật khẩu tối đa 128 ký tự');
 
+/** Both spellings of a Vietnamese mobile number, e.g. ['0912345678', '+84912345678'] */
+export const phoneVariants = (phone: string) => {
+  const local = phone.startsWith('+84') ? `0${phone.slice(3)}` : phone;
+  return [local, `+84${local.slice(1)}`];
+};
+
+/** Accepts 0912345678 or +84912345678 and always outputs the 0 form, so duplicates are easy to spot */
 export const phoneSchema = z
   .string()
   .trim()
-  .regex(/^(0|\+84)(3|5|7|8|9)\d{8}$/, 'Số điện thoại không hợp lệ (VD: 0912345678)');
+  .regex(/^(0|\+84)(3|5|7|8|9)\d{8}$/, 'Số điện thoại không hợp lệ (VD: 0912345678)')
+  .transform((phone) => phoneVariants(phone)[0]);
 
 export const facebookUrlSchema = z
   .string()

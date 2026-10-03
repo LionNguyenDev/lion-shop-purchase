@@ -17,7 +17,7 @@ export function Sheet({ open, onOpenChange, title, children, footer }: SheetProp
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className='fixed inset-0 z-50 animate-fade-in bg-foreground/40 backdrop-blur-[2px]' />
+        <RadixDialog.Overlay className='fixed inset-0 z-50 animate-fade-in bg-slate-950/50 backdrop-blur-[2px]' />
         <RadixDialog.Content className='fixed inset-y-0 left-0 z-50 flex w-[min(88vw,360px)] animate-slide-in-left flex-col bg-card shadow-lift'>
           <div className='flex h-16 shrink-0 items-center justify-between border-border border-b px-5'>
             <RadixDialog.Title className='font-bold font-heading text-lg'>{title}</RadixDialog.Title>

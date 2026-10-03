@@ -33,6 +33,9 @@ export interface Category {
   description: string;
 }
 
+/** Lightweight category for dropdowns */
+export type CategoryOption = Pick<Category, 'id' | 'name' | 'slug'>;
+
 export interface CategoryWithCount extends Category {
   productCount: number;
 }

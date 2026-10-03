@@ -1,13 +1,14 @@
 'use client';
 
 import { useCategories, useProducts } from '@/api/shop';
+import { LionMascot } from '@/components/landing/lion-mascot';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Input, Select } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
 import { Sheet } from '@/components/ui/sheet';
-import { formatCompactPrice, formatNumber } from '@/lib/format';
+import { formatNumber } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { PRODUCT_SORTS, type ProductSort } from '@/lib/validations';
 import { Loader2, PackageSearch, Search, SlidersHorizontal, Sparkles, X } from 'lucide-react';
@@ -26,7 +27,6 @@ const SORT_LABELS: Record<ProductSort, string> = {
 };
 
 const PAGE_SIZE = 12;
-const optionalNumber = (value: string | null) => (value ? Number(value) : undefined);
 
 export function Catalog() {
   const router = useRouter();
@@ -37,9 +37,6 @@ export function Catalog() {
   const params = {
     q: searchParams.get('q') ?? '',
     category: searchParams.get('category') ?? '',
-    minPrice: optionalNumber(searchParams.get('minPrice')),
-    maxPrice: optionalNumber(searchParams.get('maxPrice')),
-    inStock: searchParams.get('inStock') === 'true',
     sort: (PRODUCT_SORTS as readonly string[]).includes(searchParams.get('sort') ?? '')
       ? (searchParams.get('sort') as ProductSort)
       : 'newest',
@@ -71,9 +68,6 @@ export function Catalog() {
   const productQuery = {
     q: params.q || undefined,
     category: params.category || undefined,
-    minPrice: params.minPrice,
-    maxPrice: params.maxPrice,
-    inStock: params.inStock ? ('true' as const) : undefined,
     sort: params.sort,
     page: params.page,
     limit: PAGE_SIZE,
@@ -95,28 +89,13 @@ export function Catalog() {
       label: activeCategory.name,
       clear: () => updateParams({ category: undefined }),
     },
-    (params.minPrice !== undefined || params.maxPrice !== undefined) && {
-      key: 'price',
-      label:
-        params.minPrice !== undefined && params.maxPrice !== undefined
-          ? `${formatCompactPrice(params.minPrice)} – ${formatCompactPrice(params.maxPrice)}`
-          : params.minPrice !== undefined
-            ? `Từ ${formatCompactPrice(params.minPrice)}`
-            : `Đến ${formatCompactPrice(params.maxPrice ?? 0)}`,
-      clear: () => updateParams({ minPrice: undefined, maxPrice: undefined }),
-    },
-    params.inStock && { key: 'stock', label: 'Còn hàng', clear: () => updateParams({ inStock: undefined }) },
   ].filter(Boolean) as { key: string; label: string; clear: () => void }[];
   const filterCount = chips.filter((chip) => chip.key !== 'q').length;
 
   const sidebar = (
     <CatalogSidebar
       category={params.category}
-      minPrice={params.minPrice}
-      maxPrice={params.maxPrice}
-      inStock={params.inStock}
       categories={categories}
-      priceBounds={data?.priceBounds}
       onChange={changeFilters}
       onReset={resetFilters}
       hasFilters={chips.length > 0}
@@ -128,15 +107,20 @@ export function Catalog() {
 
   return (
     <div>
-      <section className='relative animate-fade-up overflow-hidden rounded-3xl bg-primary px-5 py-8 text-primary-foreground sm:px-8 sm:py-10'>
-        <div className='-top-16 -right-10 absolute h-56 w-56 rounded-full bg-accent/90' aria-hidden />
-        <div className='-bottom-20 absolute right-40 h-40 w-40 rounded-full bg-primary-hover' aria-hidden />
+      <section className='relative isolate animate-fade-up overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-teal-700 to-teal-800 px-5 py-8 text-white shadow-emerald-900/20 shadow-xl sm:px-8 sm:py-10'>
+        <div className='-top-24 -right-16 -z-10 absolute h-72 w-72 rounded-full bg-amber-300/40 blur-3xl' aria-hidden />
         <div
-          className='absolute top-6 right-64 hidden h-14 w-14 rotate-12 rounded-2xl bg-white/10 md:block'
+          className='-bottom-28 -z-10 absolute left-1/3 h-64 w-64 rounded-full bg-emerald-300/30 blur-3xl'
           aria-hidden
         />
+        <div className='-translate-y-1/2 absolute top-1/2 right-16 hidden h-48 w-48 lg:block' aria-hidden>
+          <span className='absolute inset-0 animate-pulse-ring rounded-full bg-white/20' />
+          <div className='relative h-full w-full animate-float-slow rounded-full bg-white/90 p-5 shadow-2xl ring-4 ring-white/30'>
+            <LionMascot />
+          </div>
+        </div>
         <div className='relative max-w-2xl'>
-          <p className='inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 font-semibold text-sm'>
+          <p className='inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 font-semibold text-sm ring-1 ring-white/25 backdrop-blur'>
             <Sparkles className='h-4 w-4' aria-hidden />
             {categories
               ? `${formatNumber(categories.reduce((sum, c) => sum + c.productCount, 0))} sản phẩm đang bán`
@@ -204,7 +188,7 @@ export function Catalog() {
                 <SlidersHorizontal className='h-5 w-5' aria-hidden />
                 Bộ lọc
                 {filterCount > 0 && (
-                  <span className='flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 font-bold text-[11px] text-white'>
+                  <span className='flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 font-bold text-[11px] text-accent-foreground'>
                     {filterCount}
                   </span>
                 )}
@@ -283,6 +267,9 @@ export function Catalog() {
               <Pagination
                 page={data.page}
                 totalPages={data.totalPages}
+                total={data.total}
+                limit={data.limit}
+                itemLabel='sản phẩm'
                 onPageChange={(page) => {
                   updateParams({ page: page > 1 ? page : undefined }, false);
                   window.scrollTo({ top: 0, behavior: 'smooth' });

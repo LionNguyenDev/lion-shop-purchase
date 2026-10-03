@@ -122,7 +122,14 @@ export function AdminOrders() {
       </DataTable>
       {data && (
         <div className='mt-6'>
-          <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
+          <Pagination
+            page={data.page}
+            totalPages={data.totalPages}
+            total={data.total}
+            limit={data.limit}
+            itemLabel='đơn hàng'
+            onPageChange={setPage}
+          />
         </div>
       )}
       <OrderDetailDialog orderId={selectedId} onClose={() => setSelectedId(null)} />

@@ -3,7 +3,9 @@ import { Loader2 } from 'lucide-react';
 import { type ButtonHTMLAttributes, forwardRef } from 'react';
 
 const variants = {
-  primary: 'bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm',
+  // Same gradient + light sweep as the landing page CTA; white text stays above 4.5:1 in both themes
+  primary:
+    'btn-shimmer bg-gradient-to-r from-emerald-700 to-teal-700 text-white shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30',
   accent: 'bg-accent text-accent-foreground hover:bg-accent-hover shadow-sm',
   outline: 'border border-border bg-card text-foreground hover:border-primary hover:text-primary',
   ghost: 'text-foreground hover:bg-muted',
@@ -27,7 +29,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const buttonClasses = (variant: keyof typeof variants = 'primary', size: keyof typeof sizes = 'md') =>
   cn(
-    'inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-xl font-semibold transition-colors duration-200 disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-xl font-semibold transition-[color,background-color,border-color,box-shadow] duration-200 disabled:pointer-events-none disabled:opacity-50',
     variants[variant],
     sizes[size]
   );

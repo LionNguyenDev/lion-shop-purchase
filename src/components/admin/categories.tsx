@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ConfirmDialog, Dialog } from '@/components/ui/dialog';
 import { FormField } from '@/components/ui/form-field';
 import { Input, Textarea } from '@/components/ui/input';
+import { Pagination } from '@/components/ui/pagination';
 import { formatNumber } from '@/lib/format';
 import { type CategoryInput, categorySchema } from '@/lib/validations';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,9 +16,12 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { DataTable } from './data-table';
 import { PageHeader } from './page-header';
+import { SearchInput } from './search-input';
 
 export function AdminCategories() {
-  const { data, isLoading } = useAdminCategories();
+  const [q, setQ] = useState('');
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useAdminCategories({ q: q || undefined, page, limit: 20 });
   const deleteCategory = useDeleteCategory();
   const [editing, setEditing] = useState<AdminCategory | 'new' | null>(null);
   const [deleting, setDeleting] = useState<AdminCategory | null>(null);
@@ -37,12 +41,21 @@ export function AdminCategories() {
     <div>
       <PageHeader
         title='Danh mục'
-        description='Nhóm sản phẩm để khách dễ tìm'
+        description={data ? `${formatNumber(data.total)} danh mục` : 'Nhóm sản phẩm để khách dễ tìm'}
         action={
-          <Button onClick={() => setEditing('new')}>
-            <Plus className='h-5 w-5' aria-hidden />
-            Thêm danh mục
-          </Button>
+          <div className='flex w-full flex-col gap-2 sm:w-auto sm:flex-row'>
+            <SearchInput
+              placeholder='Tìm danh mục'
+              onSearch={(value) => {
+                setQ(value);
+                setPage(1);
+              }}
+            />
+            <Button onClick={() => setEditing('new')}>
+              <Plus className='h-5 w-5' aria-hidden />
+              Thêm danh mục
+            </Button>
+          </div>
         }
       />
       <DataTable
@@ -53,10 +66,14 @@ export function AdminCategories() {
           { label: 'Thao tác', className: 'text-right' },
         ]}
         loading={isLoading}
-        isEmpty={data?.length === 0}
-        empty='Chưa có danh mục nào. Hãy tạo danh mục trước khi thêm sản phẩm.'
+        isEmpty={data?.items.length === 0}
+        empty={
+          q
+            ? `Không tìm thấy danh mục nào khớp "${q}".`
+            : 'Chưa có danh mục nào. Hãy tạo danh mục trước khi thêm sản phẩm.'
+        }
       >
-        {data?.map((category) => (
+        {data?.items.map((category) => (
           <tr key={category.id} className='hover:bg-muted/40'>
             <td className='px-4 py-3 font-semibold'>{category.name}</td>
             <td className='max-w-sm px-4 py-3 text-muted-foreground'>
@@ -87,6 +104,18 @@ export function AdminCategories() {
           </tr>
         ))}
       </DataTable>
+      {data && (
+        <div className='mt-6'>
+          <Pagination
+            page={data.page}
+            totalPages={data.totalPages}
+            total={data.total}
+            limit={data.limit}
+            itemLabel='danh mục'
+            onPageChange={setPage}
+          />
+        </div>
+      )}
 
       <CategoryFormDialog category={editing} onClose={() => setEditing(null)} />
       <ConfirmDialog

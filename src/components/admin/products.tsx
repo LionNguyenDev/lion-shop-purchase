@@ -1,6 +1,6 @@
 'use client';
 
-import { useAdminCategories, useAdminProducts, useDeleteProduct, useSetProductVisibility } from '@/api/admin';
+import { useAdminProducts, useCategoryOptions, useDeleteProduct, useSetProductVisibility } from '@/api/admin';
 import type { Product } from '@/api/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,7 @@ export function AdminProducts() {
     page,
     limit: 20,
   });
-  const { data: categories } = useAdminCategories();
+  const { data: categories } = useCategoryOptions();
   const setVisible = useSetProductVisibility();
   const deleteProduct = useDeleteProduct();
   const [editing, setEditing] = useState<Product | 'new' | null>(null);
@@ -180,7 +180,14 @@ export function AdminProducts() {
       </DataTable>
       {data && (
         <div className='mt-6'>
-          <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
+          <Pagination
+            page={data.page}
+            totalPages={data.totalPages}
+            total={data.total}
+            limit={data.limit}
+            itemLabel='sản phẩm'
+            onPageChange={setPage}
+          />
         </div>
       )}
 

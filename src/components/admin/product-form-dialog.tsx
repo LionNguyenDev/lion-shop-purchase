@@ -1,7 +1,7 @@
 'use client';
 
 import { useSaveProduct } from '@/api/admin';
-import type { Category, Product } from '@/api/types';
+import type { CategoryOption, Product } from '@/api/types';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { FormField } from '@/components/ui/form-field';
@@ -28,7 +28,7 @@ const EMPTY: FormValues = {
 
 interface ProductFormDialogProps {
   product: Product | 'new' | null;
-  categories: Category[];
+  categories: CategoryOption[];
   onClose: () => void;
 }
 

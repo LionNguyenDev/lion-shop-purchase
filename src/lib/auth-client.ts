@@ -9,6 +9,7 @@ export const authClient = createAuthClient({
 const AUTH_ERRORS: Record<string, string> = {
   USER_ALREADY_EXISTS: 'Email này đã được đăng ký',
   USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: 'Email này đã được đăng ký',
+  PHONE_ALREADY_EXISTS: 'Số điện thoại này đã được đăng ký',
   INVALID_EMAIL_OR_PASSWORD: 'Email hoặc mật khẩu không đúng',
   INVALID_OTP: 'Mã OTP không đúng',
   OTP_EXPIRED: 'Mã OTP đã hết hạn, vui lòng gửi lại mã mới',

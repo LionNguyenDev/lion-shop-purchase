@@ -70,6 +70,7 @@ Sau đó đăng nhập bằng tài khoản admin, vào **Quản trị → Cài �
 | `NEXT_PUBLIC_APP_URL` | URL public của app, ví dụ `http://localhost:3000` |
 | `NEXT_PUBLIC_API_URL` | Base URL cho Axios, mặc định `/api` |
 | `MONGODB_URI` | Chuỗi kết nối MongoDB (có tên database) |
+| `MONGODB_SERVER_SELECTION_TIMEOUT_MS` | (Tuỳ chọn) Thời gian chờ kết nối tới MongoDB trước khi báo lỗi, mặc định `5000` (5 giây). Driver mặc định 30 giây, lâu hơn thời gian chạy tối đa của function trên Vercel |
 | `BETTER_AUTH_SECRET` | Secret ký session, tạo bằng `openssl rand -base64 32` |
 | `BETTER_AUTH_URL` | URL app dùng cho auth, giống `NEXT_PUBLIC_APP_URL` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` | SMTP gửi OTP. Để trống `SMTP_HOST` khi dev thì OTP được in ra console của server |

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import * as RadixDialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { buttonClasses } from './button';
 
 interface DialogProps {
   open: boolean;
@@ -18,7 +19,7 @@ export function Dialog({ open, onOpenChange, title, description, children, class
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className='fixed inset-0 z-50 bg-foreground/40 backdrop-blur-[2px] data-[state=open]:animate-[fade-in_150ms_ease-out]' />
+        <RadixDialog.Overlay className='fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-[2px] data-[state=open]:animate-[fade-in_150ms_ease-out]' />
         <RadixDialog.Content
           className={cn(
             '-translate-y-1/2 fixed inset-x-4 top-1/2 z-50 mx-auto max-h-[calc(100dvh-2rem)] w-auto max-w-md overflow-y-auto rounded-2xl bg-card p-6 shadow-lift data-[state=open]:animate-[dialog-in_200ms_ease-out]',
@@ -83,10 +84,7 @@ export function ConfirmDialog({
           type='button'
           onClick={onConfirm}
           disabled={loading}
-          className={cn(
-            'h-11 rounded-xl px-5 font-semibold text-white transition-colors disabled:opacity-50',
-            destructive ? 'bg-destructive hover:bg-destructive/90' : 'bg-primary hover:bg-primary-hover'
-          )}
+          className={buttonClasses(destructive ? 'destructive' : 'primary')}
         >
           {loading ? 'Đang xử lý...' : confirmLabel}
         </button>

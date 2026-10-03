@@ -73,6 +73,8 @@ const config: Config = {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         },
+        // Light streak crossing the shop banner every few seconds
+        sweep: { '0%': { transform: 'translateX(-120%)' }, '55%, 100%': { transform: 'translateX(120%)' } },
         // Floating chat buttons (FLOATING_CHAT_BUTTONS.md): bounce up with a slight overshoot
         'chat-pop': {
           '0%': { opacity: '0', transform: 'scale(0.85) translateY(12px)' },
@@ -98,10 +100,12 @@ const config: Config = {
         draw: 'draw 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.4s both',
         'gradient-shift': 'gradient-shift 6s ease-in-out infinite',
         'chat-pop': 'chat-pop 0.7s cubic-bezier(0.2, 0.8, 0.3, 1.2) backwards',
+        sweep: 'sweep 4s ease-in-out infinite',
+        heartbeat: 'bump 1.4s ease-in-out infinite',
       },
       boxShadow: {
-        card: '0 1px 2px rgb(6 78 59 / 0.06), 0 4px 16px rgb(6 78 59 / 0.06)',
-        lift: '0 8px 30px rgb(6 78 59 / 0.12)',
+        card: '0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px rgb(15 23 42 / 0.05)',
+        lift: '0 12px 32px rgb(15 23 42 / 0.12)',
       },
     },
   },

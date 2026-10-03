@@ -80,7 +80,14 @@ export function MyOrders() {
       </div>
       {data && (
         <div className='mt-8'>
-          <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
+          <Pagination
+            page={data.page}
+            totalPages={data.totalPages}
+            total={data.total}
+            limit={data.limit}
+            itemLabel='đơn hàng'
+            onPageChange={setPage}
+          />
         </div>
       )}
       <ConfirmDialog

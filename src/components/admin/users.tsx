@@ -101,7 +101,14 @@ export function AdminUsers() {
       </DataTable>
       {data && (
         <div className='mt-6'>
-          <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
+          <Pagination
+            page={data.page}
+            totalPages={data.totalPages}
+            total={data.total}
+            limit={data.limit}
+            itemLabel='tài khoản'
+            onPageChange={setPage}
+          />
         </div>
       )}
       <ConfirmDialog

@@ -5,7 +5,7 @@
 /* Design tokens (RGB channels so Tailwind can apply opacity) */
 :root {
   --color-background: 240 253 247;
-  --color-foreground: 6 46 36;
+  --color-foreground: 15 23 42; /* slate-900, same as the landing page */
   --color-card: 255 255 255;
   --color-primary: 4 120 87; /* emerald-700, 5.5:1 with white */
   --color-primary-hover: 6 95 70;
@@ -15,9 +15,9 @@
   --color-accent-hover: 194 65 12;
   --color-accent-soft: 255 237 213;
   --color-on-accent: 255 255 255;
-  --color-muted: 236 245 241;
+  --color-muted: 241 245 249; /* slate-100 */
   --color-muted-foreground: 71 85 105;
-  --color-border: 200 236 220;
+  --color-border: 226 232 240; /* slate-200 */
   --color-ring: 5 150 105;
   --color-destructive: 220 38 38;
   --color-destructive-soft: 254 226 226;
@@ -125,69 +125,5 @@ html:has([data-landing]) {
   .btn-shimmer:hover::after,
   .btn-shimmer:focus-visible::after {
     transform: translateX(120%);
-  }
-
-  /* Gradient underline growing from the left */
-  .nav-link {
-    position: relative;
-  }
-  .nav-link::after {
-    content: "";
-    position: absolute;
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: 0.35rem;
-    height: 2px;
-    border-radius: 9999px;
-    background: linear-gradient(90deg, #059669, #14b8a6, #fbbf24);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .nav-link:hover::after,
-  .nav-link:focus-visible::after {
-    transform: scaleX(1);
-  }
-}
-
-/* Dual-thumb range slider: two native range inputs stacked; only the thumbs take pointer events */
-@layer components {
-  .range-thumb {
-    @apply pointer-events-none absolute inset-0 h-full w-full cursor-pointer appearance-none bg-transparent;
-  }
-  .range-thumb:focus-visible {
-    box-shadow: none !important;
-  }
-  .range-thumb::-webkit-slider-thumb {
-    pointer-events: auto;
-    appearance: none;
-    height: 24px;
-    width: 24px;
-    border-radius: 9999px;
-    background: #fff;
-    border: 3px solid rgb(var(--color-primary));
-    box-shadow: 0 2px 6px rgb(6 78 59 / 0.25);
-    cursor: grab;
-    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
-  }
-  .range-thumb::-moz-range-thumb {
-    pointer-events: auto;
-    height: 18px;
-    width: 18px;
-    border-radius: 9999px;
-    background: #fff;
-    border: 3px solid rgb(var(--color-primary));
-    box-shadow: 0 2px 6px rgb(6 78 59 / 0.25);
-    cursor: grab;
-  }
-  .range-thumb:active::-webkit-slider-thumb {
-    cursor: grabbing;
-    transform: scale(1.15);
-  }
-  .range-thumb:focus-visible::-webkit-slider-thumb {
-    box-shadow: 0 0 0 5px rgb(var(--color-ring) / 0.3);
-  }
-  .range-thumb:focus-visible::-moz-range-thumb {
-    box-shadow: 0 0 0 5px rgb(var(--color-ring) / 0.3);
   }
 }

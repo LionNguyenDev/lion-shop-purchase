@@ -42,7 +42,7 @@ export function ProductCard({ product, onAdd, adding, index = 0 }: ProductCardPr
   return (
     <article
       style={{ animationDelay: `${Math.min(index, 11) * 45}ms` } as CSSProperties}
-      className='group hover:-translate-y-1 flex animate-fade-up flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-card transition-[transform,box-shadow] duration-300 ease-out hover:shadow-lift'
+      className='group hover:-translate-y-1 flex animate-fade-up flex-col overflow-hidden rounded-3xl border border-border bg-card/90 shadow-card backdrop-blur-md transition-[transform,box-shadow] duration-300 ease-out hover:shadow-emerald-500/15 hover:shadow-xl'
     >
       <Link href={href} className='relative block aspect-square overflow-hidden' tabIndex={-1} aria-hidden>
         <ProductImage
@@ -56,19 +56,19 @@ export function ProductCard({ product, onAdd, adding, index = 0 }: ProductCardPr
         />
         <div className='absolute top-3 left-3 flex flex-col items-start gap-1.5'>
           {isNew && !outOfStock && (
-            <span className='rounded-full bg-accent px-2.5 py-0.5 font-bold text-[11px] text-white uppercase tracking-wide shadow-sm'>
+            <span className='rounded-full bg-accent px-2.5 py-0.5 font-bold text-[11px] text-accent-foreground uppercase tracking-wide shadow-sm'>
               Mới
             </span>
           )}
           {lowStock && (
-            <span className='rounded-full bg-white/95 px-2.5 py-0.5 font-bold text-[11px] text-destructive shadow-sm'>
+            <span className='rounded-full bg-card/95 px-2.5 py-0.5 font-bold text-[11px] text-destructive shadow-sm'>
               Chỉ còn {product.stock}
             </span>
           )}
         </div>
         {outOfStock && (
-          <div className='absolute inset-0 flex items-center justify-center bg-foreground/35'>
-            <span className='rounded-full bg-white px-4 py-1.5 font-bold text-foreground text-sm shadow'>Hết hàng</span>
+          <div className='absolute inset-0 flex items-center justify-center bg-slate-950/40'>
+            <span className='rounded-full bg-card px-4 py-1.5 font-bold text-foreground text-sm shadow'>Hết hàng</span>
           </div>
         )}
       </Link>
@@ -93,7 +93,7 @@ export function ProductCard({ product, onAdd, adding, index = 0 }: ProductCardPr
           </div>
           <div className='mt-1 h-1 overflow-hidden rounded-full bg-muted' aria-hidden>
             <div
-              className='h-full origin-left rounded-full bg-gradient-to-r from-primary to-accent transition-transform duration-700 ease-out'
+              className='h-full origin-left rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-400 transition-transform duration-700 ease-out'
               style={{ transform: `scaleX(${outOfStock ? 1 : soldRatio})` }}
             />
           </div>
@@ -132,7 +132,7 @@ export function ProductCard({ product, onAdd, adding, index = 0 }: ProductCardPr
 
 export function ProductCardSkeleton() {
   return (
-    <div className='overflow-hidden rounded-2xl border border-border/70 bg-card'>
+    <div className='overflow-hidden rounded-3xl border border-border bg-card'>
       <div className={cn('aspect-square', shimmerClasses)} />
       <div className='space-y-2.5 p-4'>
         <div className={cn('h-3 w-1/3 rounded', shimmerClasses)} />
