@@ -23,6 +23,27 @@
   --color-destructive-soft: 254 226 226;
 }
 
+/* Dark tokens, only reachable on the landing page for now (other routes are forced light) */
+.dark {
+  --color-background: 2 6 23; /* slate-950 */
+  --color-foreground: 241 245 249;
+  --color-card: 15 23 42;
+  --color-primary: 52 211 153; /* emerald-400 with dark text, 9:1 */
+  --color-primary-hover: 110 231 183;
+  --color-primary-soft: 6 78 59;
+  --color-on-primary: 2 44 34;
+  --color-accent: 251 146 60;
+  --color-accent-hover: 253 186 116;
+  --color-accent-soft: 67 20 7;
+  --color-on-accent: 67 20 7;
+  --color-muted: 30 41 59;
+  --color-muted-foreground: 148 163 184;
+  --color-border: 51 65 85;
+  --color-ring: 52 211 153;
+  --color-destructive: 248 113 113;
+  --color-destructive-soft: 69 10 10;
+}
+
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
@@ -59,6 +80,7 @@
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
@@ -74,6 +96,57 @@
   from {
     opacity: 0;
     transform: translateY(calc(-50% + 8px)) scale(0.98);
+  }
+}
+
+/* Landing page */
+html:has([data-landing]) {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@layer components {
+  /* Light streak sweeping across the button on hover */
+  .btn-shimmer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .btn-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .btn-shimmer:hover::after,
+  .btn-shimmer:focus-visible::after {
+    transform: translateX(120%);
+  }
+
+  /* Gradient underline growing from the left */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.35rem;
+    height: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #059669, #14b8a6, #fbbf24);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    transform: scaleX(1);
   }
 }
 

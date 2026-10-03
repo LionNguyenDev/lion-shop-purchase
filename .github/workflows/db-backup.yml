@@ -1,0 +1,64 @@
+name: Database backup
+
+on:
+  schedule:
+    # 18:00 UTC = 01:00 Vietnam time, every day
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check secrets
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$MONGODB_URI" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Add MONGODB_URI and BACKUP_PASSPHRASE in Settings > Secrets and variables > Actions"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install MongoDB Database Tools
+        run: |
+          if ! command -v mongodump >/dev/null; then
+            curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+            echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/8.0 multiverse" \
+              | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq mongodb-database-tools
+          fi
+          mongodump --version | head -1
+
+      - name: Dump and encrypt
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: scripts/db-backup.sh backups
+
+      - name: Upload encrypted backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: backups/
+          if-no-files-found: error
+          # Public repos keep artifacts at most 90 days. Override with the BACKUP_RETENTION_DAYS variable
+          retention-days: ${{ vars.BACKUP_RETENTION_DAYS || 30 }}

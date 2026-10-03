@@ -2,12 +2,12 @@
 
 import { useMe } from '@/api/shop';
 import { useShopEntry } from '@/components/shop/use-shop-entry';
-import { Button, buttonClasses } from '@/components/ui/button';
 import { ROUTES } from '@/lib/routes';
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { ArrowRight, MessageCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { OUTLINE_BUTTON, PRIMARY_BUTTON } from './styles';
 
 export function HeroActions() {
   const { data: me } = useMe();
@@ -25,15 +25,14 @@ export function HeroActions() {
 
   return (
     <div className='flex flex-col gap-3 sm:flex-row'>
-      <Button variant='accent' size='lg' onClick={enterShop} className='group'>
-        Vào cửa hàng
-        <ArrowRight className='h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5' aria-hidden />
-      </Button>
-      {!me?.user && (
-        <Link href={ROUTES.REGISTER} className={buttonClasses('outline', 'lg')}>
-          Tạo tài khoản miễn phí
-        </Link>
-      )}
+      <button type='button' onClick={enterShop} className={cn(PRIMARY_BUTTON, 'group h-12 px-6 text-base')}>
+        Khám phá ngay
+        <ArrowRight className='h-5 w-5 transition-transform duration-200 group-hover:translate-x-1' aria-hidden />
+      </button>
+      <a href='#contact' className={cn(OUTLINE_BUTTON, 'h-12 px-6 text-base')}>
+        <MessageCircle className='h-5 w-5' aria-hidden />
+        Liên hệ mua hàng
+      </a>
       {dialog}
     </div>
   );

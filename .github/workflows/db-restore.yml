@@ -1,0 +1,99 @@
+name: Database restore
+
+# Manual only. Restores an encrypted backup into the database in the RESTORE_MONGODB_URI secret.
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Run ID of the "Database backup" run to restore (empty = latest successful backup)'
+        required: false
+        default: ''
+      confirm:
+        description: 'Type RESTORE to confirm. Collections in the target database will be dropped and replaced'
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: db-restore
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check confirmation and secrets
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+          RESTORE_MONGODB_URI: ${{ secrets.RESTORE_MONGODB_URI }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ "$CONFIRM" != "RESTORE" ]; then
+            echo "::error::Type RESTORE in the confirm field to run a restore"
+            exit 1
+          fi
+          if [ -z "$RESTORE_MONGODB_URI" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Add RESTORE_MONGODB_URI (the new database) and BACKUP_PASSPHRASE in Settings > Secrets and variables > Actions"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Find backup run
+        id: run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          if [ -z "$RUN_ID" ]; then
+            RUN_ID="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow db-backup.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          fi
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo "::error::No successful backup run found"
+            exit 1
+          fi
+          echo "Restoring from backup run $RUN_ID"
+          echo "id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Download backup
+        uses: actions/download-artifact@v4
+        with:
+          pattern: db-backup-*
+          path: backups/
+          merge-multiple: true
+          run-id: ${{ steps.run.outputs.id }}
+          github-token: ${{ github.token }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install MongoDB Database Tools
+        run: |
+          if ! command -v mongorestore >/dev/null; then
+            curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+            echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/8.0 multiverse" \
+              | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq mongodb-database-tools
+          fi
+          mongorestore --version | head -1
+
+      - name: Decrypt and restore
+        env:
+          RESTORE_MONGODB_URI: ${{ secrets.RESTORE_MONGODB_URI }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          CONFIRM_RESTORE: RESTORE
+        run: |
+          BACKUP="$(find backups -name '*.archive.enc' | head -1)"
+          if [ -z "$BACKUP" ]; then
+            echo "::error::The backup run has no .archive.enc file"
+            exit 1
+          fi
+          scripts/db-restore.sh "$BACKUP"

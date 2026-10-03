@@ -44,3 +44,6 @@ next-env.d.ts
 # local tool state
 .kilo/
 .claude/settings.local.json
+
+# downloaded database backups (encrypted, but never commit them)
+/backups/

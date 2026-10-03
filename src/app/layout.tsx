@@ -1,4 +1,4 @@
-import { fontHeading, fontSans } from '@/config/fonts';
+import { fontHeading, fontMono, fontSans } from '@/config/fonts';
 import { siteConfig } from '@/config/site';
 import { cn } from '@/lib/utils';
 import type { Metadata, Viewport } from 'next';
@@ -53,10 +53,15 @@ type RootLayoutProps = Readonly<{ children: React.ReactNode }>;
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang='vi'>
+    <html lang='vi' suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable, fontHeading.variable)}
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased',
+          fontSans.variable,
+          fontHeading.variable,
+          fontMono.variable
+        )}
       >
         <Providers>{children}</Providers>
       </body>

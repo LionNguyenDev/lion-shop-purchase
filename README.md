@@ -114,11 +114,48 @@ src/
 │   ├── models/       # Mongoose: user (view của collection Better Auth), product, category, cart, order, setting
 │   └── services/     # Logic sản phẩm, giỏ hàng, đơn hàng
 └── middleware.ts     # Chuyển khách chưa đăng nhập ở /shop, /admin về /login
-scripts/              # seed-admin.ts, seed-demo.ts
+scripts/              # seed-admin.ts, seed-demo.ts, db-backup.sh, db-restore.sh, backup-crypto.mjs
 design-system/        # Design system từ ui-ux-pro-max
 ```
 
 Phân quyền thật sự nằm ở layout (server) và từng API handler. Middleware chỉ kiểm tra nhanh cookie.
+
+## Backup & khôi phục dữ liệu
+
+Atlas gói free không có backup tự động, nên repo dùng GitHub Actions để backup hằng ngày.
+
+- **`Database backup`** ([.github/workflows/db-backup.yml](.github/workflows/db-backup.yml)): chạy 01:00 giờ Việt Nam mỗi ngày (hoặc bấm **Run workflow**). Chạy `mongodump`, **mã hoá AES-256-GCM** bằng `BACKUP_PASSPHRASE`, rồi lưu thành artifact `db-backup-<run id>` (giữ 30 ngày, đổi bằng biến `BACKUP_RETENTION_DAYS`, tối đa 90). Repo public nên ai cũng tải được artifact, nhưng không có passphrase thì không đọc được.
+- **`Database restore`** ([.github/workflows/db-restore.yml](.github/workflows/db-restore.yml)): chạy tay, khôi phục backup mới nhất (hoặc theo run ID) vào database trong secret `RESTORE_MONGODB_URI`. Phải gõ `RESTORE` để xác nhận. Collection trùng tên trong database đích sẽ bị xoá và thay thế.
+
+### Cài đặt (một lần)
+
+Vào repo GitHub → **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret | Giá trị |
+| --- | --- |
+| `MONGODB_URI` | Chuỗi kết nối database đang chạy (có tên database, ví dụ `.../lion-shop-purchase?...`) |
+| `BACKUP_PASSPHRASE` | Chuỗi ngẫu nhiên ≥ 16 ký tự, tạo bằng `openssl rand -base64 32`. **Lưu vào trình quản lý mật khẩu**, mất là không giải mã được backup |
+| `RESTORE_MONGODB_URI` | Chỉ cần khi khôi phục: chuỗi kết nối database mới |
+
+Atlas: thêm `0.0.0.0/0` vào **Network Access**, vì runner của GitHub không có IP cố định.
+
+### Khi mất database
+
+1. Tạo cluster / database mới, lấy connection string (tên database có thể khác database cũ).
+2. Lưu nó vào secret `RESTORE_MONGODB_URI`, chạy workflow **Database restore** với `confirm = RESTORE`.
+3. Đổi `MONGODB_URI` của app (Vercel và `.env`) sang database mới. Giữ nguyên `BETTER_AUTH_SECRET` cũ để khách không bị đăng xuất và vẫn xem được mật khẩu cửa hàng. Mật khẩu của user không phụ thuộc secret này.
+4. Cập nhật secret `MONGODB_URI` để backup tiếp tục chạy với database mới.
+
+Khôi phục trên máy (cần `brew install mongodb-database-tools` và Node): tải artifact về, giải nén, rồi chạy
+
+```bash
+RESTORE_MONGODB_URI="mongodb+srv://.../ten-database?..." BACKUP_PASSPHRASE="..." \
+  scripts/db-restore.sh lion-shop-2026-10-03T180000Z.archive.enc
+```
+
+Backup thủ công trên máy: `MONGODB_URI=... BACKUP_PASSPHRASE=... scripts/db-backup.sh backups`.
+
+Lưu ý: GitHub tự tắt workflow theo lịch của repo public nếu 60 ngày không có commit nào. Thỉnh thoảng nên tải một bản backup về lưu riêng (Google Drive...), phòng khi mất cả tài khoản GitHub.
 
 ## Git conventions
 
