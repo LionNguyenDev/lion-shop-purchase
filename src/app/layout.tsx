@@ -30,10 +30,15 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-96x96.png',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.ico', sizes: '48x48' },
+    ],
+    shortcut: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
+  manifest: '/site.webmanifest',
   twitter: {
     card: 'summary_large_image',
     title: siteConfig.name,

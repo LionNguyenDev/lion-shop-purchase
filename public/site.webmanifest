@@ -1,6 +1,6 @@
 {
-  "name": "NextJS Boilerplate",
-  "short_name": "Boilerplate",
+  "name": "Lion Shopping",
+  "short_name": "Lion Shopping",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#047857",
   "background_color": "#ffffff",
   "display": "standalone"
 }
