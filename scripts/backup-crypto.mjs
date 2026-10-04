@@ -57,7 +57,7 @@ async function decrypt(input, output, passphrase) {
   const size = statSync(input).size;
   if (size < HEADER_LEN + TAG_LEN) throw new Error('File is too small to be a backup');
   const header = readBytes(input, 0, HEADER_LEN);
-  if (!header.subarray(0, MAGIC.length).equals(MAGIC)) throw new Error('Not a Lion Shopping backup file');
+  if (!header.subarray(0, MAGIC.length).equals(MAGIC)) throw new Error('Not a Lion Cosmetic backup file');
   const salt = header.subarray(MAGIC.length, MAGIC.length + SALT_LEN);
   const iv = header.subarray(MAGIC.length + SALT_LEN);
   const tag = readBytes(input, size - TAG_LEN, TAG_LEN);

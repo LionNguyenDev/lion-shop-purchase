@@ -5,12 +5,14 @@ import type { CategoryOption, Product } from '@/api/types';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { FormField } from '@/components/ui/form-field';
-import { Input, Select, Textarea } from '@/components/ui/input';
+import { Input, Textarea } from '@/components/ui/input';
+import { slugify } from '@/lib/text';
 import { type ProductInput, productSchema } from '@/lib/validations';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { CategoryCombobox } from './category-combobox';
 import { ImageUploader } from './image-uploader';
 
 type FormValues = ProductInput;
@@ -21,7 +23,7 @@ const EMPTY: FormValues = {
   price: 0,
   stock: 0,
   sold: 0,
-  category: '',
+  categoryName: '',
   images: [],
   isVisible: true,
 };
@@ -41,8 +43,13 @@ export function ProductFormDialog({ product, categories, onClose }: ProductFormD
     handleSubmit,
     reset,
     control,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(productSchema), defaultValues: EMPTY });
+
+  // Matched by slug like the server does, so "son môi" counts as the existing "Son Môi"
+  const categorySlug = slugify(watch('categoryName'));
+  const isNewCategory = categorySlug !== '' && !categories.some((category) => slugify(category.name) === categorySlug);
 
   useEffect(() => {
     if (!product) return;
@@ -54,11 +61,11 @@ export function ProductFormDialog({ product, categories, onClose }: ProductFormD
             price: product.price,
             stock: product.stock,
             sold: product.sold,
-            category: product.category?.id ?? '',
+            categoryName: product.category?.name ?? '',
             images: product.images,
             isVisible: product.isVisible,
           }
-        : { ...EMPTY, category: categories[0]?.id ?? '' }
+        : { ...EMPTY, categoryName: categories[0]?.name ?? '' }
     );
   }, [product, isEdit, categories, reset]);
 
@@ -86,16 +93,20 @@ export function ProductFormDialog({ product, categories, onClose }: ProductFormD
           <Input {...register('name')} />
         </FormField>
         <div className='grid gap-4 sm:grid-cols-2'>
-          <FormField label='Danh mục' error={errors.category?.message} required>
-            <Select {...register('category')}>
-              <option value=''>Chọn danh mục</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </Select>
-          </FormField>
+          <Controller
+            control={control}
+            name='categoryName'
+            render={({ field, fieldState }) => (
+              <FormField
+                label='Danh mục'
+                error={fieldState.error?.message}
+                hint={isNewCategory ? 'Danh mục mới, sẽ được tạo khi lưu' : undefined}
+                required
+              >
+                <CategoryCombobox {...field} options={categories} placeholder='Chọn hoặc nhập danh mục mới' />
+              </FormField>
+            )}
+          />
           <FormField label='Giá (VNĐ)' error={errors.price?.message} required>
             <Input type='number' inputMode='numeric' min={0} step={1000} {...register('price', number)} />
           </FormField>

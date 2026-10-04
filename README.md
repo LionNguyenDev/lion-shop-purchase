@@ -1,4 +1,4 @@
-# Lion Shopping
+# Lion Cosmetic
 
 Trang bán hàng đơn giản: khách đăng ký tài khoản, nhập mật khẩu cửa hàng do admin cấp để vào mua, đặt hàng thanh toán khi nhận hàng (COD). Admin quản lý sản phẩm, danh mục, đơn hàng và người dùng.
 
@@ -13,7 +13,7 @@ Trang bán hàng đơn giản: khách đăng ký tài khoản, nhập mật kh�
 - Địa chỉ: [provinces.open-api.vn](https://provinces.open-api.vn) v2, đơn vị hành chính mới (34 tỉnh/thành → phường/xã)
 - Biome, Husky, lint-staged, commitlint, Docker + Nginx
 
-UI theo design system sinh bởi skill [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) (cài ở `.claude/skills/`, chỉ áp dụng cho project này). Token và các điều chỉnh nằm ở `design-system/lion-shopping/MASTER.md`.
+UI theo design system sinh bởi skill [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) (cài ở `.claude/skills/`, chỉ áp dụng cho project này). Token và các điều chỉnh nằm ở `design-system/lion-cosmetic/MASTER.md`.
 
 ## Chức năng
 

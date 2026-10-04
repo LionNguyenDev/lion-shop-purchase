@@ -1,8 +1,8 @@
 import { productSchema } from '@/lib/validations';
-import { badRequest, notFound, parseBody, route } from '@/server/http';
+import { notFound, parseBody, route } from '@/server/http';
 import { Cart } from '@/server/models/cart';
-import { Category } from '@/server/models/category';
 import { Product } from '@/server/models/product';
+import { findOrCreateCategory } from '@/server/services/categories';
 import { requireAdmin } from '@/server/session';
 import { isValidObjectId } from 'mongoose';
 
@@ -22,9 +22,9 @@ export const GET = route<{ id: string }>(async (_req, { params }) => {
 export const PATCH = route<{ id: string }>(async (req, { params }) => {
   await requireAdmin();
   const product = await findProduct(params);
-  const input = await parseBody(req, productSchema.partial());
-  if (input.category && !(await Category.exists({ _id: input.category }))) throw badRequest('Danh mục không tồn tại');
+  const { categoryName, ...input } = await parseBody(req, productSchema.partial());
   product.set(input);
+  if (categoryName) product.category = (await findOrCreateCategory(categoryName))._id;
   await product.save();
   return product.populate('category', 'name slug');
 });

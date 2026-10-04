@@ -38,7 +38,7 @@ export function LoginForm() {
 
   return (
     <>
-      <AuthHeading title='Đăng nhập' description='Chào mừng bạn quay lại Lion Shopping.' />
+      <AuthHeading title='Đăng nhập' description='Chào mừng bạn quay lại Lion Cosmetic.' />
       <form onSubmit={onSubmit} className='space-y-5' noValidate>
         {formError && (
           <p role='alert' className='rounded-xl bg-destructive-soft px-4 py-3 font-medium text-destructive text-sm'>

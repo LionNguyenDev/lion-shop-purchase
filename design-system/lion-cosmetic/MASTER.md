@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** Lion Shopping
+**Project:** Lion Cosmetic
 **Generated:** 2026-10-02 23:44:26
 **Category:** E-commerce
 

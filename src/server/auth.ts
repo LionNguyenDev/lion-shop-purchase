@@ -12,7 +12,7 @@ import { sendPasswordResetOtp } from './mail';
 const OTP_EXPIRES_IN_SECONDS = 10 * 60;
 
 export const auth = betterAuth({
-  appName: 'Lion Shopping',
+  appName: 'Lion Cosmetic',
   baseURL: serverEnv.authUrl,
   secret: serverEnv.authSecret,
   // Transactions need a replica set; a local standalone mongod does not have one

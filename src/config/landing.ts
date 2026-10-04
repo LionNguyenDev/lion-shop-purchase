@@ -4,7 +4,7 @@
  */
 
 export const BRAND = {
-  name: 'Lion Shopping',
+  name: 'Lion Cosmetic',
   tagline: 'Shopping & Lifestyle',
   techTeam: 'Nguyễn Danh Lưu',
 };

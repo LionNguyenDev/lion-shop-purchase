@@ -1,7 +1,7 @@
 import { adminProductQuerySchema, productSchema } from '@/lib/validations';
-import { badRequest, paginate, parseBody, parseQuery, route } from '@/server/http';
-import { Category } from '@/server/models/category';
+import { paginate, parseBody, parseQuery, route } from '@/server/http';
 import { Product } from '@/server/models/product';
+import { findOrCreateCategory } from '@/server/services/categories';
 import { searchFilter } from '@/server/services/products';
 import { requireAdmin } from '@/server/session';
 import { NextResponse } from 'next/server';
@@ -26,8 +26,8 @@ export const GET = route(async (req) => {
 
 export const POST = route(async (req) => {
   await requireAdmin();
-  const input = await parseBody(req, productSchema);
-  if (!(await Category.exists({ _id: input.category }))) throw badRequest('Danh mục không tồn tại');
-  const product = await Product.create(input);
+  const { categoryName, ...input } = await parseBody(req, productSchema);
+  const category = await findOrCreateCategory(categoryName);
+  const product = await Product.create({ ...input, category: category._id });
   return NextResponse.json(product, { status: 201 });
 });

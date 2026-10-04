@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 
-// Tokens come from design-system/lion-shopping/MASTER.md (ui-ux-pro-max)
+// Tokens come from design-system/lion-cosmetic/MASTER.md (ui-ux-pro-max)
 const config: Config = {
   // Dark mode is only switchable on the landing page; other routes are forced to light (see providers.tsx)
   darkMode: 'class',

@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
-export const metadata: Metadata = { title: { default: 'Quản trị', template: '%s | Quản trị Lion Shopping' } };
+export const metadata: Metadata = { title: { default: 'Quản trị', template: '%s | Quản trị Lion Cosmetic' } };
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const user = await getCurrentUser();

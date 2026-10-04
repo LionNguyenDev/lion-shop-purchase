@@ -23,7 +23,7 @@ export function ComeBackBanner() {
             <p className='font-bold font-heading text-base text-foreground sm:text-lg'>
               Cảm ơn bạn đã chọn{' '}
               <span className='whitespace-nowrap bg-gradient-to-r from-emerald-700 via-teal-700 to-amber-700 bg-clip-text text-transparent dark:from-emerald-400 dark:via-teal-300 dark:to-amber-300'>
-                Lion Shopping
+                Lion Cosmetic
               </span>
               !
             </p>

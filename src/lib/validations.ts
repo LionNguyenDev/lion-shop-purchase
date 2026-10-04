@@ -86,8 +86,10 @@ export const shopPasswordSchema = z.object({
 });
 export type ShopPasswordInput = z.infer<typeof shopPasswordSchema>;
 
+const categoryNameSchema = z.string().trim().min(2, 'Tên tối thiểu 2 ký tự').max(60, 'Tên tối đa 60 ký tự');
+
 export const categorySchema = z.object({
-  name: z.string().trim().min(2, 'Tên tối thiểu 2 ký tự').max(60, 'Tên tối đa 60 ký tự'),
+  name: categoryNameSchema,
   description: z.string().trim().max(300, 'Mô tả tối đa 300 ký tự').optional().default(''),
 });
 export type CategoryInput = z.input<typeof categorySchema>;
@@ -104,7 +106,8 @@ export const productSchema = z.object({
   price: nonNegativeInt('Giá').max(1_000_000_000, 'Giá quá lớn'),
   stock: nonNegativeInt('Số lượng có thể bán').max(1_000_000, 'Số lượng quá lớn'),
   sold: nonNegativeInt('Số lượng đã bán').max(10_000_000, 'Số lượng quá lớn'),
-  category: objectId,
+  /** Name of an existing category, or of a new one created on save */
+  categoryName: categoryNameSchema,
   images: z.array(z.url('Link ảnh không hợp lệ')).max(10, 'Tối đa 10 ảnh'),
   isVisible: z.boolean(),
 });
